@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MexicanWaveKata
@@ -8,18 +10,18 @@ namespace MexicanWaveKata
     public class UnitTest1
     {
         [TestMethod]
-        public void StringEmpty_Return_Empty()
-        {
-            var expected = new List<string> { " " };
-            var actual = MexicanWave.WaveString(" ");
-            CollectionAssert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
         public void String_a_Return_A()
         {
             var expected = new List<string>{"A"};
             var actual = MexicanWave.WaveString("a");
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void String_aa_Return_Aa_aA()
+        {
+            var expected = new List<string> { "Aa", "aA" };
+            var actual = MexicanWave.WaveString("aa");
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -39,13 +41,13 @@ namespace MexicanWaveKata
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        //[TestMethod]
-        //public void String_hi_world()
-        //{
-        //    var expected = new List<string> { "Hi word", "hI word", "hi Word", "hi wOrd", "hi woRd", "hi worD" };
-        //    var actual = MexicanWave.WaveString("hi word");
-        //    CollectionAssert.AreEqual(expected, actual);
-        //}
+        [TestMethod]
+        public void String_hi_world()
+        {
+            var expected = new List<string> { "Hi word", "hI word" ,"hi Word", "hi wOrd", "hi woRd", "hi worD" };
+            var actual = MexicanWave.WaveString("hi word");
+            CollectionAssert.AreEqual(expected, actual);
+        }
     }
     public class MexicanWave
     {
@@ -55,13 +57,18 @@ namespace MexicanWaveKata
         public static List<string> WaveString(string input)
         {
             var outputString = new List<string>();
-            var a = string.Empty;
-            foreach (var character in input)
-            {
-                a = input.Replace(character, Char.ToUpper(character));
-                outputString.Add(a);
-            }
 
+            foreach (var character in input.Select((value, index) => new { value, index }))
+            {
+                if (character.value != ' ')
+                {
+                    StringBuilder sb = new StringBuilder(input);
+                    sb[character.index] = (Char.ToUpper(sb[character.index]));
+                    outputString.Add(sb.ToString());
+                }
+  
+            }
+           
             return outputString;
         }
     }
